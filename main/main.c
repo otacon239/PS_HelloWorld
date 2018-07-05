@@ -15,20 +15,19 @@
 #define DEG 0.2
 #define PI 3.14159
 
-// UG_FONT font = FONT_6X8; // need to find a way to implement setting a font variable to be used later in code
+const UG_FONT *font = &FONT_6X8; // need to find a way to implement setting a font variable to be used later in code
 
 char hello[] = "Hello World!"; // Store strings that will be used
 char goodbye[] = "Goodbye!";
-float phase = 0; // This will be used for the sin wave animation
+float phase = 0;	   // This will be used for the sin wave animation
 float color_phase = 0; // This will be used for showing color in the text
-float adj_height = (KC_SCREEN_H / 2) - 4; // This will be used for offsetting the sin wave to match screen height
 
 extern const uint8_t gameboy_wav_start[] asm("_binary_gameboy_wav_start"); // Utilize generated binary pointers
 extern const uint8_t gameboy_wav_end[] asm("_binary_gameboy_wav_end");
 
 void exit_anim() { // What to show when exiting
 	kcugui_cls();
-	UG_PutString((KC_SCREEN_W - strlen(goodbye) * FONT_6X8.char_width) / 2, (KC_SCREEN_H - FONT_6X8.char_height) / 2, goodbye);
+	UG_PutString((KC_SCREEN_W - strlen(goodbye) * font->char_width) / 2, (KC_SCREEN_H - font->char_height) / 2, goodbye);
 	kcugui_flush();
 	vTaskDelay(pdMS_TO_TICKS(2000)); // PS version of sleep(ms)
 }
@@ -52,6 +51,8 @@ void play_sound() {
 }
 
 void app_main() {
+	float adj_height = (KC_SCREEN_H / 2) - font->char_width / 2; // This will be used for offsetting the sin wave to match screen height
+	// This needs to be assigned within main() so that font has already been defined	
 	kchal_init(); // Initialize the PocketSprite SDK.
 	kcugui_init(); // Initialize uGUI
 	sndmixer_init(1, 8000); // (no. of channels, sample rate in khz)
@@ -68,8 +69,8 @@ void app_main() {
 			hsv.val = 1;
 			RGB rgb = hsv2rgb(hsv);
 			UG_PutChar(hello[i], // Char
-				i * FONT_6X8.char_width + (KC_SCREEN_W-strlen(hello)*FONT_6X8.char_width)/2, // X
-				round((sin(i * .375 + phase) * adj_height + adj_height)), // Y
+				i * font->char_width + (KC_SCREEN_W-strlen(hello)*font->char_width)/2, // X
+				round((sin(i * .375 + phase) * (adj_height - font->char_width/2) + adj_height)), // Y
 				kchal_ugui_rgb(rgb.r, rgb.g, rgb.b), // FG Color
 				C_BLACK); // BG Color
 		}
@@ -78,9 +79,9 @@ void app_main() {
 		color_phase = fmod(color_phase + 1, 360.0f);
 		kcugui_flush(); // Send buffer to display
 
-		if (kchal_get_keys() == KC_BTN_POWER) { // Check for power button press
+		if (kchal_get_keys() & KC_BTN_POWER) { // Check for power button press
 			do_powerbtn_menu();
-		} else if (kchal_get_keys() == KC_BTN_A) {
+		} else if (kchal_get_keys() & KC_BTN_A) {
 			play_sound();
 		}
 	}

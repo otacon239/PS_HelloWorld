@@ -1,7 +1,7 @@
 #include <stdint.h> // uint8_t, etc.
-#include "string.h"
-#include "math.h"
-#include "hsv2rgb.h"
+#include "string.h" // Needed for str_len()
+#include "math.h" // Needed for fabs(), fmod(), sin()
+#include "hsv2rgb.h" // Header I created for converting HSV to RGB
 
 #include "8bkc-hal.h"        // PS HW Abstraction Layer
 #include "powerbtn_menu.h"   // Power Button menu stuff powerbtn_menu_show, constants, etc
@@ -12,10 +12,17 @@
 #include "freertos/FreeRTOS.h" // These libraries are required for the vTaskDelay function
 #include "freertos/task.h"
 
-#define DEG 0.2
-#define PI 3.14159
+const UG_FONT *font = &FONT_6X8; // Define font for more readable code
 
-const UG_FONT *font = &FONT_6X8; // need to find a way to implement setting a font variable to be used later in code
+#define SIN_DEG 0.2 // Number of degrees per frame the phase for the sin wave moves
+#define COL_DEG 2 // Number of degrees the base hue moves per frame
+#define SIN_FREQ 0.375 // Multiplier for the sin wave density - smaller = larger wave
+#define COL_OFFSET 30 		// Number of degrees per character the base hue is offset by
+#define PI 3.14159
+#define SW KC_SCREEN_W		  // Screen width
+#define SH KC_SCREEN_H		  // Screen height
+#define CW font->char_width   // Character width
+#define CH font->char_height  //Character height
 
 char hello[] = "Hello World!"; // Store strings that will be used
 char goodbye[] = "Goodbye!";
@@ -27,7 +34,10 @@ extern const uint8_t gameboy_wav_end[] asm("_binary_gameboy_wav_end");
 
 void exit_anim() { // What to show when exiting
 	kcugui_cls();
-	UG_PutString((KC_SCREEN_W - strlen(goodbye) * font->char_width) / 2, (KC_SCREEN_H - font->char_height) / 2, goodbye);
+	UG_PutString((SW-((CW + 1)*strlen(goodbye)-1))/2, (SH-CH)/2, goodbye);
+	/* CW + 1 because UG_PutSring() adds an extra pixel of
+	space between each character and take 1 back for the
+	last character that does not need the space */
 	kcugui_flush();
 	vTaskDelay(pdMS_TO_TICKS(2000)); // PS version of sleep(ms)
 }
@@ -51,12 +61,10 @@ void play_sound() {
 }
 
 void app_main() {
-	float adj_height = (KC_SCREEN_H / 2) - font->char_width / 2; // This will be used for offsetting the sin wave to match screen height
-	// This needs to be assigned within main() so that font has already been defined	
 	kchal_init(); // Initialize the PocketSprite SDK.
 	kcugui_init(); // Initialize uGUI
 	sndmixer_init(1, 8000); // (no. of channels, sample rate in khz)
-	UG_FontSelect(&FONT_6X8); // The default font that is enabled out of the box
+	UG_FontSelect(font); // The default font that is enabled out of the box
 	UG_SetForecolor(C_WHITE);
 	UG_SetBackcolor(C_BLACK);
 	while (true) {
@@ -64,19 +72,19 @@ void app_main() {
 		
 		for (int i = 0; i < strlen(hello); i++) {
 			HSV hsv;
-			hsv.hue = fmod(color_phase+i*5, 360);
+			hsv.hue = fmod(color_phase+i*COL_OFFSET, 360);
 			hsv.sat = 1;
 			hsv.val = 1;
 			RGB rgb = hsv2rgb(hsv);
 			UG_PutChar(hello[i], // Char
-				i * font->char_width + (KC_SCREEN_W-strlen(hello)*font->char_width)/2, // X
-				round((sin(i * .375 + phase) * (adj_height - font->char_width/2) + adj_height)), // Y
+				i * CW + (SW-strlen(hello)*CW)/2, // X
+				round(sin(i * SIN_FREQ + phase) * (SH/2 - CH/2) + (SH/2 - CH/2)), // Y
 				kchal_ugui_rgb(rgb.r, rgb.g, rgb.b), // FG Color
 				C_BLACK); // BG Color
 		}
 		
-		phase = fmod(phase + 1 / (2 * PI) * DEG, 2*PI); // Move phase forward by DEG degrees per frame
-		color_phase = fmod(color_phase + 1, 360.0f);
+		phase = fmod(phase + 1 / (2 * PI) * SIN_DEG, 2*PI); // Move phase forward by DEG degrees per frame
+		color_phase = fmod(color_phase + COL_DEG, 360.0f);
 		kcugui_flush(); // Send buffer to display
 
 		if (kchal_get_keys() & KC_BTN_POWER) { // Check for power button press

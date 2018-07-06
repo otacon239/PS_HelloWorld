@@ -231,7 +231,7 @@ If you run the code at this point, you should have almost the same result as bef
 
 The first thing we'll do is center the text. This is where the math comes in. See the below picture:
 
-`![Audacity opening screen](https://github.com/otacon239/PS_HelloWorld/tree/master/main/tutorial/images/ti1.png)`
+[Centering text](https://github.com/otacon239/PS_HelloWorld/tree/master/main/tutorial/images/ti1.png)
 
 We're trying to get the value of `X` here. We figure out the width of the text by taking the length of the string and multiplying it by the number of characters in the string with `CW*strlen(hello)`.
 
@@ -239,16 +239,14 @@ Next, we need to figure out to total of the blank space left over by subtracting
 
 Your `UG_PutChar` function should look like this now:
 ```C
-UG_PutChar(hello[i],                        // Char
+UG_PutChar(hello[i], // Char
 	i * CW + (SW - strlen(hello) * CW) / 2, // X
-	0,                                      // Y
-	C_WHITE,                                // FG Color
-	C_BLACK);                               // BG Color
+	0, // Y
+	C_WHITE, // FG Color
+	C_BLACK); // BG Color
 ```
 
-# 
 
-# 
 
 ## Making Some Noise
 
@@ -264,17 +262,17 @@ I personally used Audacity for this since it's free and fairly simple to do what
 
 You'll be presented with the following screen:
 
-`![Audacity opening screen](https://github.com/otacon239/PS_HelloWorld/tree/master/main/tutorial/aud1.png)`
+[Audacity opening screen](https://github.com/otacon239/PS_HelloWorld/tree/master/main/tutorial/aud1.png)
 
 First, we'll want to trim off the extra silence at the beginning and end. You can do this by selecting a section like text, then just pressing the Delete key:
 
-`![Deleting audio](https://github.com/otacon239/PS_HelloWorld/tree/master/main/tutorial/aud2.png)`
+[Deleting audio](https://github.com/otacon239/PS_HelloWorld/tree/master/main/tutorial/aud2.png)
 
 Next, adjust the sample rate by choosing `Tracks > Resample...` and resample it to 8000 Hz. To make it a Mono track, choose `Tracks > Stereo to Mono`. 
 
 Finally, we can export it. Choose `File > Export Audio`. For filetype, choose "Other uncompressed formats". Set the header to WAV, encoding to Unsigned 8-Bit PCM. Make sure to change the file extension to .wav.
 
-`![File Settings](https://github.com/otacon239/PS_HelloWorld/tree/master/main/tutorial/aud3.png)`
+[File Settings](https://github.com/otacon239/PS_HelloWorld/tree/master/main/tutorial/aud3.png)
 
 Keeping the file name short will save you some hassle later on, so keep that in mind.
 

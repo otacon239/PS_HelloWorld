@@ -1,4 +1,3 @@
-#include <stdint.h> // uint8_t, etc.
 #include "string.h" // Needed for str_len()
 #include "math.h" // Needed for fabs(), fmod(), sin()
 #include "hsv2rgb.h" // Header I created for converting HSV to RGB

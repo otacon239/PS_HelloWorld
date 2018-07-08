@@ -4,15 +4,13 @@
 
 // Explanation for this math can be found here: https://www.rapidtables.com/convert/color/hsv-to-rgb.html
 
-typedef struct
-{
+typedef struct {
     uint8_t r;
     uint8_t g;
     uint8_t b;
 } RGB;
 
-typedef struct
-{
+typedef struct {
     float hue; // Expecting 0-360 degrees
     float sat; // Expecting 0-1
     float val; // Expecting 0-1

@@ -14,7 +14,7 @@ Before jumping straight into the tutorial, I wanted to give a heads-up that this
 
 I should also note that any time there is a link within an explanation of a step, it's expected that you're looking at that page when I'm referring to that page. In other words, if you see the link, click it!
 
-That being said, this was certainly quite the adventure, and many thanks go out to @Spritetm and my close friend @mz2212 for all of their support on me learning this project. Without further ado, let's get started!
+That being said, this was certainly quite the adventure, and many thanks go out to [Spritetm](https://github.com/Spritetm) and my close friend [mz2212](https://github.com/mz2212) for all of their support on me learning this project. Also, thanks to @ishotjr for correcting many of my grammar mistakes. Without further ado, let's get started!
 
 ## Table of Contents
 
@@ -30,14 +30,14 @@ That being said, this was certainly quite the adventure, and many thanks go out 
 10. [Saying Goodbye - Adding a Simple Exit Screen](#sayinggoodbye)
 11. [Final Thoughts](#finalthoughts)
 
-<a name="hitthebooks"/>
+<a name="hitthebooks"></a>
 
 ## Hit the Books - Reference Materials
 
 If you're going to be working with the PocketSprite, (I'll be referring to it as the PS from now on), you're going to be referencing *a lot* of documentation. Here are some of the documents and resources I found useful throughout the project:
 
 * PS SDK’s documentation: http://pocketsprite-sdk.readthedocs.io/en/latest/
-* PS Unofficial Discord: https://discord.gg/ZFka8Qa (You can me there: \@Otacon#6446)
+* PS Unofficial Discord: https://discord.gg/ZFka8Qa (You can find me there: \@Otacon#6446)
 * PS Subreddit: https://reddit.com/r/PocketSprite/
 * PS Github: https://github.com/PocketSprite
 * µGUI Github: https://github.com/achimdoebler/UGUI
@@ -45,7 +45,7 @@ If you're going to be working with the PocketSprite, (I'll be referring to it as
 
 And this isn't everything that I referenced for this simple little project. Undoubtedly, the most powerful resource, as any programmer will confirm, was my trusty Google search. I'll explain along the way where I struggled and how I came to my solutions.
 
-<a name="diveintoc"/>
+<a name="diveintoc"></a>
 
 ## A Dive Into C - Setting Up Your Environment
 
@@ -55,7 +55,7 @@ The first thing mentioned in the Getting Started section of the [PS SDK document
 
 Follow the instructions step-by-step. *Slowly.* I had a lot of trouble here since it was my first go around with this, but just read everything on the page and follow each step carefully. Something I should mention briefly, although it will apply to few, I happen to use an alternative shell that's not `bash`, so I would occasionally run into weirdness. If you do that yourself, just save yourself the hassle and use `bash`.
 
-Once you've followed the steps on the Toolchain Setup, follow the [Get ESP-IDF](https://esp-idf.readthedocs.io/en/latest/get-started/index.html#get-started-get-esp-idf) link. I recommend following the steps outlined in the `hello_world` project just to make sure everything compiles. Once it comes back without any errors, you can safely delete your `hello_world` folder. However, you can skip the steps talking about enabling permissions for `/dev/tty0` and the parts about flashing since we're going to be uploading the files for our code. You can simply do the following to test that creating the project folder worked:
+Once you've followed the steps on the Toolchain Setup, follow the [Get ESP-IDF](https://esp-idf.readthedocs.io/en/latest/get-started/index.html#get-started-get-esp-idf) link. I recommend following the steps outlined in the `hello_world` project just to make sure everything compiles. Once it comes back without any errors, you can safely delete your `hello_world` folder. However, you can skip the steps talking about enabling permissions for `/dev/tty0` and the parts about flashing since we're going to be uploading the files for our code via WiFi. You can simply do the following to test that creating the project folder worked:
 
 ```bash
 cd ~/esp/hello_world
@@ -73,41 +73,47 @@ python /home/otacon/esp/esp-idf/components/esptool_py/esptool/esptool.py --chip 
 
 Once that's done, it's time to...
 
-### Setup the PocketSprite Environment
+### Set Up the PocketSprite Environment
 
 Again, just slowly follow the steps provided in the [PS SDK Getting Started](http://pocketsprite-sdk.readthedocs.io/en/latest/gettingstarted/index.html#software) page. Once you have your environment variables setup and ready to go, it's time to get started on our actual program!
 
-<a name="sayhello"/>
+<a name="sayhello"></a>
 
 ## Say Hello - Running Your First Program
 
 The absolute minimum required for getting your project started is the following:
 
-* Create an empty folder with the name `hello_world`
+* Create an empty folder with the name `ps_hello`
 * Create a new file `makefile` in this folder
 * Add the following code in this file:
 ```make
-#
-# This is a project Makefile. It is assumed the directory this Makefile resides in is a
-# project subdirectory.
-#
-
 EXTRA_COMPONENT_DIRS := $(POCKETSPRITE_PATH)/8bkc-components/
 IDF_PATH := $(POCKETSPRITE_PATH)/esp-idf
 
-PROJECT_NAME := hello_world
+PROJECT_NAME := ps_hello
 
 include $(IDF_PATH)/make/project.mk
 ```
 * Create a folder inside this one called `main`
 * Create a new file in the `main` folder called `main.c`
-* Add `app_main(){}` to this file
-* In your terminal, run `cd ~/esp/hello_world`
+* Add the following to the `main.c` file:
+```C
+app_main() {
+}
+```
+* In your terminal, run `cd ~/esp/ps_hello`
 * Run `make menuconfig`
-* ***List of things that we need***
+	* Choose Component Config
+	* SPI Flash driver
+	* Writing to Dangerous Regions
+	* Select "Allowed"
 * Run `make`
 
-Once you have that, we can open up our `main.c` file and add the following code:
+The first time you run this, it can take some time. If you want to speed up the process, you can use `make -j X` with X being the number of cores/threads your computer has available.
+
+This step will create a new directory, `build`, which contain all of the compiled code. Since we don't have anything in our app yet, we don't need to worry about the files there just yet. We'll come back to that in a moment.
+
+In order to make the simplest compiled app, we can open up our `main.c` file and replace the existing code:
 
 ```C
 #include "8bkc-hal.h"      // PS HW Abstraction Layer
@@ -118,18 +124,9 @@ void app_main()
 }
 ```
 
-I'll give you 3 guesses as to what this program does, but chances are, you only need one. This will simply exit the application and bring you back to the WiFi connection screen. Nothing too exciting, but it will prove that we can make an app.
+I'll give you 3 guesses as to what this program does, but chances are, you only need one. This will simply exit the application silently and bring you back to the WiFi connection screen. Nothing too exciting, but it will prove that we can make an app.
 
-Next, we'll need to get this code running on the device. You can simply run the following:
-
-```bash
-cd ~/esp/hello_world
-make
-```
-
-The first time you run this, it can take some time. If you want to speed up the process, you can use `make -j X` with X being the number of cores/threads your computer has available.
-
-This step will create a new directory, `build`, which contain all of the compiled code. The one we're interested in is `hello_world.bin`. Technically you can change this to the .spp extension if you want, but the device recognizes the .bin extension without any issue, so I personally just use the .bin.
+Next, we'll need to get this code running on the device. You can simply run `make` agin. Now that we have some code to work with, let's get it on the PocketSprite.
 
 If you haven't already figured out how to upload files to the device, it's fairly simple. Power on the device and leave it on the
 ```
@@ -139,25 +136,31 @@ GO TO:
 HTTP://192.
 168.4.1/
 ```
-screen. Then, connect your computer to that WiFi access point. There will be no internet connection unless you also have an ethernet connection. Once connected, open the http://192.168.4.1 URL the browser of your choice and click the "Upload!" button. Then navigate to the `build` folder and choose our `hello_world.bin`. Once uploaded, press any button on the PS and choose hello-world from the list.
+screen. Then, connect your computer to that WiFi access point. There will be no internet connection unless you also have an ethernet connection. Once connected, open the http://192.168.4.1 URL the browser of your choice and click the "Upload!" button. Then navigate to the `build` folder and choose our `ps_hello.bin`. Once uploaded, press any button on the PS and choose hello-world from the list.
 
-If we did everything right, it should pause for just a brief moment, then return to the same WiFi screen we saw earlier. Success! (unless not, in which case, good luck and use your [resources](#hitthebooks)!)
+Technically you can change this file to the .spp extension if you want, but the device recognizes the .bin extension without any issue, so I personally just use the .bin.
+
+If we did everything right, when you select the ps_hello app, it should pause for just a brief moment, then return to the same WiFi screen we saw earlier. Success! (unless not, in which case, good luck and use your [resources](#hitthebooks)!)
 
 From this point forward, any time we have code that *should* run, I'll put a full code link at the end of a section for comparison. Whenever you see the full code link, also assume that you can compile the code and upload to the device and it should work.
 
+This is the first one and the rest of them will also look like this:
+
+### **[Code Checkpoint 1](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/code/main1.c)**
+
 *Note: If at any point, you find that my full code does not work, you can reach out to me on [the Discord channel](https://discord.gg/ZFka8Qa), as mentioned above.*
 
-<a name="actuallysayhello"/>
+<a name="actuallysayhello"></a>
 
 ## Actually Say Hello - Getting Text on the Screen
 
 Now that we have a base for our program, let's get started with getting some text on the screen.
 
-We'll need to bring in a few things for this. Add the following lines next to our other `#include` statement:
+We'll need to bring in a few new libraries for this. Add the following lines next to our other `#include` statement:
 
 ```C
-#include "8bkc-ugui.h"     // PS uGUI
-#include "ugui.h"          // Full uGUI library - Full uGUI reference guide: http://embeddedlightning.com/download/reference-guide/
+#include "8bkc-ugui.h" // PS uGUI
+#include "ugui.h" // Full uGUI library - Full uGUI reference guide: http://embeddedlightning.com/download/reference-guide/
 ```
 
 Then add this to the `app_main()` function:
@@ -167,23 +170,24 @@ UG_FontSelect(&FONT_6X8); // The default font that is enabled out of the box
 UG_SetForecolor(C_WHITE); // You can find a full list of colors in the µGUI Reference Guide
 UG_SetBackcolor(C_BLACK);
 
+kcugui_cls();                       // Clear the display
 UG_PutString(0, 0, "Hello World!"); // UG S16 x , UG S16 y , char* str
-kcugui_flush(); // Send buffer to display
+kcugui_flush();                     // Send buffer to display
 ```
 
 You can remove the `kchal_exit_to_chooser();` line we added earlier for now. Otherwise, it won't stay on the screen for very long.
 
-[Code Checkpoint 1](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/code/main1.c)
+### **[Code Checkpoint 2](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/code/main2.c)**
 
 The important thing to note here is that we didn't give ourselves a way to exit the app. none of the buttons will respond and it appears we're stuck. At any point (no matter how stuck it appears), you can press the Start and Power buttons at the same time to force a reboot. This will come in quite handy while we're writing for the PS and something goes wrong. I speak from experience when I say that it will happen often.
 
-At this point, you should be able to see just the text "Hello World!" on the display. It's a bit small so the '!' gets put on the next line.
+At this point, you should be able to see just the text "Hello World!" on the display. Since the display is so small, the '!' gets put on the next line.
 
-<a name="getmeout"/>
+<a name="getmeout"></a>
 
 ## Get Me Out! - Configuring the Power Button Menu
 
-Time to include more libraries. Add the following line where the other libraries are:
+Time to include another library. Add the following line where the other libraries are:
 
 ```C
 #include "powerbtn_menu.h"   // Power Button menu stuff powerbtn_menu_show, constants, etc
@@ -193,27 +197,25 @@ Then add the following above `app_main()`:
 
 ```C
 static void do_powerbtn_menu() {
-	int i = powerbtn_menu_show(kcugui_get_fb()); // Call the powerbutton menu
-	
-	if (i == POWERBTN_MENU_EXIT) { // This handles the input from the power button menu - without it, menu options do nothing
-		kchal_exit_to_chooser();
-	}
-	if (i == POWERBTN_MENU_POWERDOWN) {
-		kchal_power_down();
-	}
+    int pwr_input = powerbtn_menu_show(kcugui_get_fb()); // Call the powerbutton menu
+
+    if (pwr_input == POWERBTN_MENU_EXIT) { // This handles the input from the power button menu - without it, menu options do nothing
+        kchal_exit_to_chooser();
+    } else if (pwr_input == POWERBTN_MENU_POWERDOWN) {
+        kchal_power_down();
+    }
 }
 ```
 
-Okay. What did we just add? First off, the line `int i = powerbtn_menu_show(kcugui_get_fb());` calls the power button menu from `powerbtn_menu.h` and since the function outputs to an `int` type variable, we need to store that output to something. In this case, the variable `i` that we initialized.
+Okay. What did we just add? First off, the line `int pwr_input = powerbtn_menu_show(kcugui_get_fb());` calls the power button menu from `powerbtn_menu.h` and since the function outputs to an `int` type variable, we need to store that output to something. In this case, the variable `pwr_input` that we initialized.
 
-Now that `i` has a value, we need to do something with it. So we check it against the constants, which you can read about ***here***
+Now that `pwr_input` has a value, we need to do something with it. So we check it against the constants, which you can read about ***here***
 
-We then need to add a section to our `app_main()` to tell it to check the hardware buttons for any input:
+We then need to add a section to the bottom of `app_main()` to tell it to check the hardware buttons for any input:
 
 ```C
 while (true) {
-    if (kchal_get_keys() & KC_BTN_POWER)
-    { // Check for power button press
+    if (kchal_get_keys() & KC_BTN_POWER) { // Check for power button press
         do_powerbtn_menu();
     }
 }
@@ -221,11 +223,11 @@ while (true) {
 
 Don't be tempted to remove the brackets to shorten things. We'll be adding more here later on.
 
-[Code Checkpoint 2](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/code/main2.c)
+### **[Code Checkpoint 3](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/code/main3.c)**
 
 Now when you press the power button, you should see the menu that shows for the built-in emulators, including the brightness and volume controls.
 
-<a name="makeitpretty"/>
+<a name="makeitpretty"></a>
 
 ## Make it Pretty - Centering the Text
 
@@ -302,9 +304,9 @@ UG_PutChar(hello[i], // Char
 
 It's been a while since we've compiled, so let's make sure all of those changes work.
 
-[Code Checkpoint 3](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/code/main3.c)
+### **[Code Checkpoint 4](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/code/main4.c)**
 
-<a name="makingwaves"/>
+<a name="makingwaves"></a>
 
 ## Making Waves - Adding the sin() Function
 
@@ -364,9 +366,9 @@ Then, just change the `1` to whatever you'd like.
 
 We just made some *major* modifications to our code. Time to make sure it all works.
 
-[Code Checkpoint 4](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/code/main4.c)
+### **[Code Checkpoint 5](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/code/main5.c)**
 
-<a name="rainbows"/>
+<a name="rainbows"></a>
 
 ## :rainbow: Rainbows! :rainbow: - Adding Color
 
@@ -424,9 +426,9 @@ kchal_ugui_rgb(rgb.r, rgb.g, rgb.b), // FG Color
 
 And that's all it takes to add a nice rainbow effect to our text.
 
-[Code Checkpoint 5](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/code/main5.c)
+### **[Code Checkpoint 6](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/code/main6.c)**
 
-<a name="makesomenoise"/>
+<a name="makesomenoise"></a>
 
 ## Make Some Noise - Utilizing the sndmixer Library
 
@@ -505,9 +507,9 @@ if (kchal_get_keys() & KC_BTN_POWER) { // Check for power button press
 
 And if you compile it, you should now have the ability to get those classic GameBoy feels.
 
-[Code Checkpoint 6](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/code/main6.c)
+### **[Code Checkpoint 7](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/code/main7.c)**
 
-<a name="sayinggoodbye"/>
+<a name="sayinggoodbye"></a>
 
 ## Saying Goodbye - Adding a Simple Exit Screen
 
@@ -560,9 +562,9 @@ This hooks into the real-time clock and pauses for two seconds before continuing
 
 And now we have completely replicated the entire app!
 
-[Code Checkpoint 7](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/code/main7.c)
+### **[Code Checkpoint 8](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/code/main8.c)**
 
-<a name="finalthoughts"/>
+<a name="finalthoughts"></a>
 
 ## Final Thoughts
 

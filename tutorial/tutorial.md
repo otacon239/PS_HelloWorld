@@ -101,6 +101,7 @@ include $(IDF_PATH)/make/project.mk
 app_main() {
 }
 ```
+* Create an empty file called `component.mk` also in the `main` folder - *We'll learn what this file does much later*
 * In your terminal, run `cd ~/esp/ps_hello`
 * Run `make menuconfig`
 	* Choose Component Config

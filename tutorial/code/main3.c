@@ -22,8 +22,7 @@ void app_main() {
     UG_PutString(0, 0, "Hello World!"); // UG S16 x , UG S16 y , char* str
     kcugui_flush();                     // Send buffer to display
 
-    while (true)
-    {
+    while (true) {
         if (kchal_get_keys() & KC_BTN_POWER) { // Check for power button press
             do_powerbtn_menu();
         }

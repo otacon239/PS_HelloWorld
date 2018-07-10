@@ -8,19 +8,17 @@ That being said, this was certainly quite the adventure, and many thanks go out 
 
 ## Table of Contents
 
-1. [Hit the Books - Reference Materials](#hitthebooks)
-2. [A Dive Into C - Setting Up Your Environment](#diveintoc)
-3. [Say Hello - Running Your First Program](#sayhello)
-4. [Actually Say Hello - Getting Text on the Screen](#actuallysayhello)
-5. [Get Me Out! - Configuring the Power Button Menu](#getmeout)
-6. [Make it Pretty - Centering the Text](#makeitpretty)
-7. [Making Waves - Adding the sin() Function](#makingwaves)
-8. [:rainbow: Rainbows! :rainbow: - Adding Color](#rainbows)
-9. [Make Some Noise - Utilizing the sndmixer Library](#makesomenoise)
-10. [Saying Goodbye - Adding a Simple Exit Screen](#sayinggoodbye)
-11. [Final Thoughts](#finalthoughts)
-
-<a name="hitthebooks"></a>
+1. [Hit the Books - Reference Materials](#hit-the-books---reference-materials)
+2. [A Dive Into C - Setting Up Your Environment](#a-dive-into-c---setting-up-your-environment)
+3. [Say Hello - Running Your First Program](#say-hello---running-your-first-program)
+4. [Actually Say Hello - Getting Text on the Screen](#actually-say-hello---getting-text-on-the-screen)
+5. [Get Me Out! - Configuring the Power Button Menu](#get-me-out---configuring-the-power-button-menu)
+6. [Make it Pretty - Centering the Text](#make-it-pretty---centering-the-text)
+7. [Making Waves - Adding the sin() Function](#making-waves---adding-the-sin-function)
+8. [:rainbow: Rainbows! :rainbow: - Adding Color](#rainbow-rainbows-rainbow---adding-color)
+9. [Make Some Noise - Utilizing the sndmixer Library](#make-some-noise---utilizing-the-sndmixer-library)
+10. [Saying Goodbye - Adding a Simple Exit Screen](#saying-goodbye---adding-a-simple-exit-screen)
+11. [Final Thoughts](#final-thoughts)
 
 ## Hit the Books - Reference Materials
 
@@ -34,8 +32,6 @@ If you're going to be working with the PocketSprite, (I'll be referring to it as
 * µGUI Reference Guide: http://embeddedlightning.com/download/reference-guide/ ([mirror just in case](https://drive.google.com/open?id=18mFoiasivllBQAZpeXbYaeohxYOpiYLc))
 
 And this isn't everything that I referenced for this simple little project. Undoubtedly, the most powerful resource, as any programmer will confirm, was my trusty Google search. I'll explain along the way where I struggled and how I came to my solutions.
-
-<a name="diveintoc"></a>
 
 ## A Dive Into C - Setting Up Your Environment
 
@@ -66,8 +62,6 @@ Once that's done, it's time to...
 ### Set Up the PocketSprite Environment
 
 Again, just slowly follow the steps provided in the [PS SDK Getting Started](http://pocketsprite-sdk.readthedocs.io/en/latest/gettingstarted/index.html#software) page. Once you have your environment variables setup and ready to go, it's time to get started on our actual program!
-
-<a name="sayhello"></a>
 
 ## Say Hello - Running Your First Program
 
@@ -140,8 +134,6 @@ This is the first one and the rest of them will also look like this:
 
 *Note: If at any point, you find that my full code does not work, you can reach out to me on [the Discord channel](https://discord.gg/ZFka8Qa), as mentioned above.*
 
-<a name="actuallysayhello"></a>
-
 ## Actually Say Hello - Getting Text on the Screen
 
 Now that we have a base for our program, let's get started with getting some text on the screen.
@@ -173,8 +165,6 @@ You can remove the `kchal_exit_to_chooser();` line we added earlier for now. Oth
 The important thing to note here is that we didn't give ourselves a way to exit the app. none of the buttons will respond and it appears we're stuck. At any point (no matter how stuck it appears), you can press the Start and Power buttons at the same time to force a reboot. This will come in quite handy while we're writing for the PS and something goes wrong. I speak from experience when I say that it will happen often.
 
 At this point, you should be able to see just the text "Hello World!" on the display. Since the display is so small, the '!' gets put on the next line.
-
-<a name="getmeout"></a>
 
 ## Get Me Out! - Configuring the Power Button Menu
 
@@ -217,8 +207,6 @@ Don't be tempted to remove the brackets to shorten things. We'll be adding more 
 ### **[Code Checkpoint 3](code/main3.c)**
 
 Now when you press the power button, you should see the menu that shows for the built-in emulators, including the brightness and volume controls.
-
-<a name="makeitpretty"></a>
 
 ## Make it Pretty - Centering the Text
 
@@ -298,8 +286,6 @@ It's been a while since we've compiled, so let's make sure all of those changes 
 
 ### **[Code Checkpoint 4](code/main4.c)**
 
-<a name="makingwaves"></a>
-
 ## Making Waves - Adding the sin() Function
 
 The math only gets harder from here. Time for more libraries. Add the following line to our already existing `#include` lines:
@@ -366,8 +352,6 @@ We just made some *major* modifications to our code. Time to make sure it all wo
 
 ### **[Code Checkpoint 5](code/main5.c)**
 
-<a name="rainbows"></a>
-
 ## :rainbow: Rainbows! :rainbow: - Adding Color
 
 I won't even bother trying to explain how to convert from Hue, Saturation and Value to Red, Green and Blue since that could be its own tutorial. Instead, I wrote a simple header file that you can import.
@@ -431,20 +415,18 @@ color_phase = fmod(color_phase + COL_DEG, 360.0f); // Move the base hue by COL_D
 Then we just need to modify the `C_WHITE` line to read:
 
 ```C
-kchal_ugui_rgb(rgb.r, rgb.g, rgb.b), // FG Color
+kchal_ugui_rgb(rgb.r, rgb.g, rgb.b), // Foreground Color
 ```
 
 And that's all it takes to add a nice rainbow effect to our text.
 
 ### **[Code Checkpoint 6](code/main6.c)**
 
-<a name="makesomenoise"></a>
-
 ## Make Some Noise - Utilizing the sndmixer Library
 
 Time for us to make use of that built-in speaker. Some important information about the speaker and some challenges I faced. First off, it's important to know that the PS processes audio best when it's an 8-bit audio file with a mono channel. It can technically handle a high sample rate, but since we're using such a small speaker and trying to save on space, I found myself processing the audio at 8 khz.
 
-It can be a bit of a challenge making sure the audio meets those requirements. If you don't need this or don't want to do this yourself, you can skip to the "Adding our code" section and just use [this file](sound/gameboy.wav).
+It can be a bit of a challenge making sure the audio meets those requirements. If you don't need this or don't want to do this yourself, you can skip to [Adding Our Code](#adding-our-code) section and just use [this file](sound/gameboy.wav).
 
 If you want to do it yourself, read on!
 
@@ -532,8 +514,6 @@ And if you compile it, you should now have the ability to get those classic Game
 
 ### **[Code Checkpoint 7](code/main7.c)**
 
-<a name="sayinggoodbye"></a>
-
 ## Saying Goodbye - Adding a Simple Exit Screen
 
 For a final touch of personality, let's add a simple "Goodbye!" message that shows as you power down or exit the device. It sounds simple, but we'll actually need to pull in our last libraries and create a new function. Thankfully we did almost this exact math earlier, with only a few minor changes.
@@ -586,8 +566,6 @@ This hooks into the real-time clock and pauses for two seconds before continuing
 And now we have completely replicated the entire app!
 
 ### **[Code Checkpoint 8](code/main8.c)**
-
-<a name="finalthoughts"></a>
 
 ## Final Thoughts
 

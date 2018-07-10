@@ -103,11 +103,10 @@ void app_main() {
 ```
 * Create an empty file called `component.mk` also in the `main` folder - *We'll learn what this file does much later*
 * In your terminal, run `cd ~/esp/ps_hello`
-* Run `make menuconfig`
-	* Choose Component Config
-	* SPI Flash driver
-	* Writing to Dangerous Regions
-	* Select "Allowed"
+* Run `make menuconfig` and choose the following options:
+    * Compiler Options --> Optimization Level --> Release
+	* Component Config --> SPI Flash driver --> Writing to Dangerous Regions --> Select "Allowed"
+* Choose Exit until the menu closes
 * Run `make`
 
 The first time you run this, it can take some time. If you want to speed up the process, you can use `make -j X` with X being the number of cores/threads your computer has available.
@@ -120,7 +119,7 @@ In order to make the simplest compiled app, we can open up our `main.c` file and
 #include "8bkc-hal.h" // PS HW Abstraction Layer
 
 void app_main() {
-  kchal_init();            // Initialize the PocketSprite SDK.
+  kchal_init(); // Initialize the PocketSprite SDK.
   kchal_exit_to_chooser(); // Exit the application
 }
 ```
@@ -167,14 +166,14 @@ We'll need to bring in a few new libraries for this. Add the following lines nex
 We'll want to remove the `kchal_exit_to_chooser()` line so that it doesn't immediately exit. Then add this to the `app_main()` function:
 
 ```C
-kcugui_init();            // Initialize uGUI
+kcugui_init(); // Initialize uGUI
 UG_FontSelect(&FONT_6X8); // The default font that is enabled out of the box
 UG_SetForecolor(C_WHITE); // You can find a full list of colors in the µGUI Reference Guide
 UG_SetBackcolor(C_BLACK);
 
-kcugui_cls();                       // Clear the display
+kcugui_cls(); // Clear the display
 UG_PutString(0, 0, "Hello World!"); // UG S16 x , UG S16 y , char* str
-kcugui_flush();                     // Send buffer to display
+kcugui_flush(); // Send buffer to display
 ```
 
 You can remove the `kchal_exit_to_chooser();` line we added earlier for now. Otherwise, it won't stay on the screen for very long.
@@ -192,7 +191,7 @@ At this point, you should be able to see just the text "Hello World!" on the dis
 Time to include another library. Add the following line where the other libraries are:
 
 ```C
-#include "powerbtn_menu.h"   // Power Button menu stuff powerbtn_menu_show, constants, etc
+#include "powerbtn_menu.h" // Power Button menu stuff powerbtn_menu_show, constants, etc
 ```
 
 Then add the following above `app_main()`:
@@ -244,11 +243,12 @@ Let's add the following:
 We first need to split our "Hello World" string into multiple parts and make it into a variable we can use. We'll be taking out the
 
 ```C
+kcugui_cls(); // Clear the display
 UG_PutString(0, 0, "Hello World!");
 kcugui_flush(); // Send buffer to display
 ```
 
-lines for now. Let's start by defining the string using the following line:
+lines for now. Let's start by create the string using the following line right underneath our `#include` lines:
 
 ```C
 char hello[] = "Hello World!"; // Store string that will be used
@@ -256,29 +256,29 @@ char hello[] = "Hello World!"; // Store string that will be used
 
 This will make the `"Hello World!"` string into an array of characters that we can iterate through in a loop so that each of them can get unique X and Y values.
 
-Before we get into anything too complex, let's define some values to make our lives easier later on:
+Before we get into anything too complex, let's define some values to make our lives easier later on, under the `hello[]` variable:
 
 ```C
 const UG_FONT *font = &FONT_6X8; // Define font for more readable code
 
-#define SW KC_SCREEN_W       // Screen width
-#define SH KC_SCREEN_H       // Screen height
-#define CW font->char_width  // Character width
+#define SW KC_SCREEN_W // Screen width
+#define SH KC_SCREEN_H // Screen height
+#define CW font->char_width // Character width
 #define CH font->char_height // Character height
 ```
 
 Let's also swap out the `UG_FontSelect(&FONT_6X8);` line for `UG_FontSelect(font);` now that we have that as a variable.
 
-Now that we have some simple variable to rely on, let's restore the functionality we started with by making our own version of the `UG_PutString()` function. Add the following lines to the `while()` loop:
+Now that we have some simple variable to rely on, let's restore the functionality we started with by mimicking the `UG_PutString()` function. Add the following lines to the `while()` loop:
 
 ```C
-kgucui_cls(); // Clear the display
+kcugui_cls(); // Clear the display
 for (int i = 0; i < strlen(hello); i++) {
 	UG_PutChar(hello[i], // Char
 		i * CW, // X
 		0, // Y
-		C_WHITE, // FG Color
-		C_BLACK); // BG Color
+		C_WHITE, // Foreground Color
+		C_BLACK); // Background Color
 }
 kcugui_flush(); // Push the buffer to the display
 ```
@@ -300,8 +300,8 @@ Your `UG_PutChar` function should look like this now:
 UG_PutChar(hello[i], // Char
 	i * CW + (SW - strlen(hello) * CW) / 2, // X
 	0, // Y
-	C_WHITE, // FG Color
-	C_BLACK); // BG Color
+	C_WHITE, // Foreground Color
+	C_BLACK); // Background Color
 ```
 
 It's been a while since we've compiled, so let's make sure all of those changes work.
@@ -312,7 +312,7 @@ It's been a while since we've compiled, so let's make sure all of those changes 
 
 ## Making Waves - Adding the sin() Function
 
-The math only gets harder from here. Time for more libraries. Add the following line to our already existing headers:
+The math only gets harder from here. Time for more libraries. Add the following line to our already existing `#include` lines:
 
 ```C
 #include "math.h"    // Needed for fabs(), fmod(), sin()
@@ -324,26 +324,26 @@ It's important to understand some basics of the `sin()` function. If we plot `Y=
 
 *Note: I've adjusted the red and green line by multiplying by the width of the characters. These lines show where the characters would end up along these lines.*
 
-We want to take that line and push it to the middle of the screen and make it the height of the screen. We can do that by adding half the height of the screen and multiplying it by the height of the screen with `Y=sin(x)*SH + SH/2`. That gives us the red line. As we know, the `UG_PutChar()` function starts at the top-left of the character, so we actually need to offset the sin wave. Again, the math is a bit tricky.
+We want to take that line and push it to the middle of the screen and make it the height of the screen. We can do that by adding half the height of the screen and multiplying it by the height of the screen with `Y=sin(x)*SH + SH/2`. That gives us the red line. As we know, the `UG_PutChar()` function starts at the top-left of the character, so we actually need to offset the sine wave. Again, the math is a bit tricky.
 
-We need to shrink the sin wave by the height of a full character, the move it back up by half the height of a full character, as marked in the picture. The resulting line is green. I've also multiplied `X` by less than one to make the sin wave have a lower frequency. This just makes it look cleaner on the small display. So now we have `Y=sin(x*.375)*(SH/2-CH/2)-(SH/2-CH/2)`.
+We need to shrink the sine wave by the height of a full character, the move it back up by half the height of a full character, as marked in the picture. The resulting line is green. I've also multiplied `X` by less than one to make the sine wave have a lower frequency. This just makes it look cleaner on the small display. So now we have `Y=sin(x*.375)*(SH/2-CH/2)-(SH/2-CH/2)`.
 
-If we want to apply this to our text, we just need to multiply our sin wave by the index of the characters themselves. And to gain better control of that `.375`, we just need to add a new `#define` with the others:
+If we want to apply this to our text, we just need to multiply our sine wave by the index of the characters themselves. And to gain better control of that `.375`, we just need to add a new `#define` with the others:
 
 ```C
-#define SIN_FREQ 0.375 // Multiplier for the sin wave density: smaller = larger wave
+#define SIN_FREQ 0.375 // Multiplier for the sine wave density: smaller = larger wave
 ```
 
-Then we just wap out the existing Y line for this:
+Then we just swap out the existing Y line for this:
 
 ```C
 round(sin(i * SIN_FREQ) * (SH/2 - CH/2) + (SH/2 - CH/2)), // Y
 ````
 
-We place it within a `round()` since we're working with pixels and we can't put anything on a half-pixel. The only thing left is to move the sin wave over time. For that, we'll create a `phase` variable outside our `app_main()` with the line
+We place it within a `round()` since we're working with pixels and we can't put anything on a half-pixel. The only thing left is to move the sine wave over time. For that, we'll create a `phase` variable outside our `app_main()` with the line
 
 ```C
-float phase = 0; // This will be used for the sin wave animation
+float phase = 0; // This will be used for the sine wave animation
 ```
 
 Then, within the `while()` loop, we want to move the phase by 1 degree. I'm not going into detail on the math for this one, but just know that this equates to +1 degree per frame. ;)
@@ -355,7 +355,7 @@ phase = fmod(phase + 1 / (2 * PI), 2*PI);
 If you find this to be a bit slow or fast, you can create a new variable, such as `SIN_DEG` by defining it next to the other defines with
 
 ```C
-#define SIN_DEG 0.2 // Number of degrees per frame the phase for the sin wave moves
+#define SIN_DEG 1 // Number of degrees per frame the phase for the sine wave moves
 ```
 
 Then multiply it like so:
@@ -364,7 +364,13 @@ Then multiply it like so:
 phase = fmod(phase + 1 / (2 * PI) * SIN_DEG, 2*PI); // Move phase forward by SIN_DEG degrees per frame
 ```
 
-Then, just change the `1` to whatever you'd like.
+Let's not forget to make use of our new variable. Adjust the `// Y` line to read as such:
+
+```C
+round(sin(i * SIN_FREQ + phase) * (SH / 2 - CH / 2) + (SH / 2 - CH / 2)), // Y
+```
+
+Then, just change the `#define SIN_DEG 1` to whatever multiplier you'd like. Higher numbers mean faster sine waves.
 
 We just made some *major* modifications to our code. Time to make sure it all works.
 
@@ -378,13 +384,25 @@ I won't even bother trying to explain how to convert from Hue, Saturation and Va
 
 You'll need to download the [header file](https://github.com/otacon239/PS_HelloWorld/blob/master/main/hsv2rgb.h) and [C file](https://github.com/otacon239/PS_HelloWorld/blob/master/main/hsv2rgb.c) and place them in the `main` folder. This handles the conversion from Hue, Saturation, Value to Red, Green, Blue. If you're feeling adventurous, you can read about it [here](https://www.rapidtables.com/convert/color/hsv-to-rgb.html).
 
-Now we just need to define a new type call HSV.
+You can import this library just like any of the others:
 
-I recommend, for readability, putting all of this right above your `UG_PutChar()` function:
+```C
+#include "hsv2rgb.h" // Header I created for converting HSV to RGB
+```
+
+Next, we'll need to create a variable for the color phase right next to the `phase` variable:
+
+```C
+float color_phase = 0; // This will be used for showing color in the text
+```
+
+Now we just need to define a new variable type call HSV. This is why we needed to import that header. Don't worry about this too much in early projects, but learning how to create new variable types is essential when working with limited hardware like this and for programming in general.
+
+I recommend, for readability, putting all of this right above your `UG_PutChar()` function. You'll notice we're also using another variable type `RGB`:
 
 ```C
 HSV hsv;
-hsv.hue = fmod(color_phase+i, 360);
+hsv.hue = fmod(color_phase + i, 360);
 hsv.sat = 1;
 hsv.val = 1;
 RGB rgb = hsv2rgb(hsv);
@@ -399,7 +417,7 @@ By default, this will make all of the colors almost the same since we're only mo
 Then modify the `hsv.hue` line to:
 
 ```C
-hsv.hue = fmod(color_phase+i*COL_OFFSET, 360);
+hsv.hue = fmod(color_phase + i*COL_OFFSET, 360);
 ```
 
 Just like the sin wave, we need to update it per frame. Add the following line right next to your `phase` line:

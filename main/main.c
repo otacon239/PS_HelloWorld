@@ -17,7 +17,6 @@ const UG_FONT *font = &FONT_6X8; // Define font for more readable code
 #define COL_DEG 2      // Number of degrees the base hue moves per frame
 #define SIN_FREQ 0.375 // Multiplier for the sin wave density - smaller = larger wave
 #define COL_OFFSET 30  // Number of degrees per character the base hue is offset by
-#define PI 3.14159
 #define SW KC_SCREEN_W       // Screen width
 #define SH KC_SCREEN_H       // Screen height
 #define CW font->char_width  // Character width
@@ -81,7 +80,7 @@ void app_main() {
                  C_BLACK);                                                                 // BG Color
     }
 
-    phase = fmod(phase + 1 / (2 * PI) * SIN_DEG, 2 * PI); // Move phase forward by SIN_DEG degrees per frame
+    phase = fmod(phase + 1 / (2 * M_PI) * SIN_DEG, 2 * M_PI); // Move phase forward by SIN_DEG degrees per frame
     color_phase = fmod(color_phase + COL_DEG, 360.0f);    // Move the base hue by COL_DEG per frame
     kcugui_flush();                                       // Send buffer to display
 

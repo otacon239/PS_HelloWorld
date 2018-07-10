@@ -314,7 +314,7 @@ It's important to understand some basics of the `sin()` function. If we plot `Y=
 
 *Note: I've adjusted the red and green line by multiplying by the width of the characters. These lines show where the characters would end up along these lines.*
 
-We want to take that line and push it to the middle of the screen and make it the height of the screen. We can do that by adding half the height of the screen and multiplying it by the height of the screen with `Y=sin(x)*SH + SH/2`. That gives us the red line. As we know, the `UG_PutChar()` function starts at the top-left of the character, so we actually need to offset the sine wave. Again, the math is a bit tricky.
+We want to take that line and push it to the middle of the screen and make it the height of the screen. We can do that by adding half the height of the screen and multiplying it by half the height of the screen with `Y=sin(x)*SH/2 + SH/2`. That gives us the red line. As we know, the `UG_PutChar()` function starts at the top-left of the character, so we actually need to offset the sine wave. Again, the math is a bit tricky.
 
 We need to shrink the sine wave by the height of a full character, the move it back up by half the height of a full character, as marked in the picture. The resulting line is green. I've also multiplied `X` by less than one to make the sine wave have a lower frequency. This just makes it look cleaner on the small display. So now we have `Y=sin(x*.375)*(SH/2-CH/2)-(SH/2-CH/2)`.
 

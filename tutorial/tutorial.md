@@ -190,7 +190,7 @@ static void do_powerbtn_menu() {
 
 Okay. What did we just add? First off, the line `int pwr_input = powerbtn_menu_show(kcugui_get_fb());` calls the power button menu from `powerbtn_menu.h` and since the function outputs to an `int` type variable, we need to store that output to something. In this case, the variable `pwr_input` that we initialized.
 
-Now that `pwr_input` has a value, we need to do something with it. So we check it against the constants, which you can read about ***here***
+Now that `pwr_input` has a value, we need to do something with it. Normally, I'd include a link to the documentation here to explain the values we get back, but it appears it hasn't been written yet. I will update this tutorial as soon as it is made public.
 
 We then need to add a section to the bottom of `app_main()` to tell it to check the hardware buttons for any input:
 

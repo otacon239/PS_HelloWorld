@@ -98,7 +98,7 @@ include $(IDF_PATH)/make/project.mk
 * Create a new file in the `main` folder called `main.c`
 * Add the following to the `main.c` file:
 ```C
-app_main() {
+void app_main() {
 }
 ```
 * Create an empty file called `component.mk` also in the `main` folder - *We'll learn what this file does much later*
@@ -117,11 +117,11 @@ This step will create a new directory, `build`, which contain all of the compile
 In order to make the simplest compiled app, we can open up our `main.c` file and replace the existing code:
 
 ```C
-#include "8bkc-hal.h"      // PS HW Abstraction Layer
+#include "8bkc-hal.h" // PS HW Abstraction Layer
 
-void app_main()
-{
-    kchal_exit_to_chooser(); // Exit the application
+void app_main() {
+  kchal_init();            // Initialize the PocketSprite SDK.
+  kchal_exit_to_chooser(); // Exit the application
 }
 ```
 
@@ -164,9 +164,10 @@ We'll need to bring in a few new libraries for this. Add the following lines nex
 #include "ugui.h" // Full uGUI library - Full uGUI reference guide: http://embeddedlightning.com/download/reference-guide/
 ```
 
-Then add this to the `app_main()` function:
+We'll want to remove the `kchal_exit_to_chooser()` line so that it doesn't immediately exit. Then add this to the `app_main()` function:
 
 ```C
+kcugui_init();            // Initialize uGUI
 UG_FontSelect(&FONT_6X8); // The default font that is enabled out of the box
 UG_SetForecolor(C_WHITE); // You can find a full list of colors in the µGUI Reference Guide
 UG_SetBackcolor(C_BLACK);

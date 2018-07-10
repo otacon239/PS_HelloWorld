@@ -1,13 +1,3 @@
-TODO:
-* Proofread for grammatical/spelling errors
-* Test all of the code at each coding checkpoint and add the files
-* Add Audacity images
-* Create credits screen
-* Post to GitHub
-* Post in Discord
-* Post in subreddit
-* Post on FB
-
 # PocketSprite Hello World Tutorial
 
 Before jumping straight into the tutorial, I wanted to give a heads-up that this is my first time working with compiled C. Before this, I worked with the Arduino IDE and Python for the most part, so I'm not entirely used to working with environment variables and the `make` command all that much.
@@ -146,7 +136,7 @@ From this point forward, any time we have code that *should* run, I'll put a ful
 
 This is the first one and the rest of them will also look like this:
 
-### **[Code Checkpoint 1](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/code/main1.c)**
+### **[Code Checkpoint 1](code/main1.c)**
 
 *Note: If at any point, you find that my full code does not work, you can reach out to me on [the Discord channel](https://discord.gg/ZFka8Qa), as mentioned above.*
 
@@ -178,7 +168,7 @@ kcugui_flush(); // Send buffer to display
 
 You can remove the `kchal_exit_to_chooser();` line we added earlier for now. Otherwise, it won't stay on the screen for very long.
 
-### **[Code Checkpoint 2](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/code/main2.c)**
+### **[Code Checkpoint 2](code/main2.c)**
 
 The important thing to note here is that we didn't give ourselves a way to exit the app. none of the buttons will respond and it appears we're stuck. At any point (no matter how stuck it appears), you can press the Start and Power buttons at the same time to force a reboot. This will come in quite handy while we're writing for the PS and something goes wrong. I speak from experience when I say that it will happen often.
 
@@ -224,7 +214,7 @@ while (true) {
 
 Don't be tempted to remove the brackets to shorten things. We'll be adding more here later on.
 
-### **[Code Checkpoint 3](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/code/main3.c)**
+### **[Code Checkpoint 3](code/main3.c)**
 
 Now when you press the power button, you should see the menu that shows for the built-in emulators, including the brightness and volume controls.
 
@@ -289,7 +279,7 @@ If you run the code at this point, you should have almost the same result as bef
 
 The first thing we'll do is center the text. This is where the math comes in. See the below picture:
 
-[Centering text](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/images/ti1.png)
+![Centering text](images/ti1.png)
 
 We're trying to get the value of `X` here. We figure out the width of the text by taking the length of the string and multiplying it by the number of characters in the string with `CW*strlen(hello)`.
 
@@ -306,7 +296,7 @@ UG_PutChar(hello[i], // Char
 
 It's been a while since we've compiled, so let's make sure all of those changes work.
 
-### **[Code Checkpoint 4](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/code/main4.c)**
+### **[Code Checkpoint 4](code/main4.c)**
 
 <a name="makingwaves"></a>
 
@@ -320,7 +310,7 @@ The math only gets harder from here. Time for more libraries. Add the following 
 
 It's important to understand some basics of the `sin()` function. If we plot `Y=sin(x)` on a calculator with the window adjusted to the screen resolution of the PocketSprite, we get the black line in this picture:
 
-[Sin Waves](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/images/ti2.png)
+![Sin Waves](images/ti2.png)
 
 *Note: I've adjusted the red and green line by multiplying by the width of the characters. These lines show where the characters would end up along these lines.*
 
@@ -374,7 +364,7 @@ Then, just change the `#define SIN_DEG 1` to whatever multiplier you'd like. Hig
 
 We just made some *major* modifications to our code. Time to make sure it all works.
 
-### **[Code Checkpoint 5](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/code/main5.c)**
+### **[Code Checkpoint 5](code/main5.c)**
 
 <a name="rainbows"></a>
 
@@ -382,7 +372,7 @@ We just made some *major* modifications to our code. Time to make sure it all wo
 
 I won't even bother trying to explain how to convert from Hue, Saturation and Value to Red, Green and Blue since that could be its own tutorial. Instead, I wrote a simple header file that you can import.
 
-You'll need to download the [header file](https://github.com/otacon239/PS_HelloWorld/blob/master/main/hsv2rgb.h) and [C file](https://github.com/otacon239/PS_HelloWorld/blob/master/main/hsv2rgb.c) and place them in the `main` folder. This handles the conversion from Hue, Saturation, Value to Red, Green, Blue. If you're feeling adventurous, you can read about it [here](https://www.rapidtables.com/convert/color/hsv-to-rgb.html).
+You'll need to download the [header file](../main/hsv2rgb.h) and [C file](../main/hsv2rgb.c) and place them in the `main` folder. This handles the conversion from Hue, Saturation, Value to Red, Green, Blue. If you're feeling adventurous, you can read about it [here](https://www.rapidtables.com/convert/color/hsv-to-rgb.html).
 
 You can import this library just like any of the others:
 
@@ -446,7 +436,7 @@ kchal_ugui_rgb(rgb.r, rgb.g, rgb.b), // FG Color
 
 And that's all it takes to add a nice rainbow effect to our text.
 
-### **[Code Checkpoint 6](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/code/main6.c)**
+### **[Code Checkpoint 6](code/main6.c)**
 
 <a name="makesomenoise"></a>
 
@@ -454,7 +444,7 @@ And that's all it takes to add a nice rainbow effect to our text.
 
 Time for us to make use of that built-in speaker. Some important information about the speaker and some challenges I faced. First off, it's important to know that the PS processes audio best when it's an 8-bit audio file with a mono channel. It can technically handle a high sample rate, but since we're using such a small speaker and trying to save on space, I found myself processing the audio at 8 khz.
 
-It can be a bit of a challenge making sure the audio meets those requirements. If you don't need this or don't want to do this yourself, you can skip to the "Adding our code" section and just use [this file](https://github.com/otacon239/PS_HelloWorld/blob/master/main/sound/gameboy.wav).
+It can be a bit of a challenge making sure the audio meets those requirements. If you don't need this or don't want to do this yourself, you can skip to the "Adding our code" section and just use [this file](sound/gameboy.wav).
 
 If you want to do it yourself, read on!
 
@@ -464,25 +454,25 @@ I personally used Audacity for this since it's free and fairly simple to do what
 
 You'll be presented with the following screen:
 
-[Audacity opening screen](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/aud1.png)
+![Audacity opening screen](images/aud1.png)
 
 First, we'll want to trim off the extra silence at the beginning and end. You can do this by selecting a section like text, then just pressing the Delete key:
 
-[Selecting audio](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/aud2.png)
+![Selecting audio](images/aud2.png)
 
-[Trimming trailing audio](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/aud3.png)
+![Trimming trailing audio](images/aud3.png)
 
-[Trimming leading audio](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/aud4.png)
+![Trimming leading audio](images/aud4.png)
 
 Next, adjust the sample rate by choosing `Tracks > Resample...` and resample it to 8000 Hz. To make it a Mono track, choose `Tracks > Stereo to Mono`. Set the `Project Sample Rate` at the bottom-left to 8000 Hz.
 
 To make sure that we don't cause any potential damage to the speaker (even though it is unlikely), choose `Effect > Amplify...` and enter `-6` for the `New Peak Amplitude` and choose `OK`.
 
-[Increased amplitude](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/aud5.png)
+![Increased amplitude](images/aud5.png)
 
 Finally, we can export it. Choose `File > Export Audio`. For filetype, choose "Other uncompressed formats". Set the header to WAV, encoding to Unsigned 8-Bit PCM. Make sure to change the file extension to `.wav`.
 
-[File settings](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/aud6.png)
+![File settings](images/aud6.png)
 
 Keeping the file name short will save you some hassle later on, so keep that in mind.
 
@@ -540,7 +530,7 @@ if (kchal_get_keys() & KC_BTN_POWER) { // Check for power button press
 
 And if you compile it, you should now have the ability to get those classic GameBoy feels (or whatever sound you decided to use).
 
-### **[Code Checkpoint 7](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/code/main7.c)**
+### **[Code Checkpoint 7](code/main7.c)**
 
 <a name="sayinggoodbye"></a>
 
@@ -573,7 +563,7 @@ void exit_anim() { // What to show when exiting
 
 Now to center the text.
 
-[Centering text - again](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/images/ti3.png)
+![Centering text - again](images/ti3.png)
 
 `Y` is simple. We just need to take half the screen height and subtract half the character height.
 
@@ -595,7 +585,7 @@ This hooks into the real-time clock and pauses for two seconds before continuing
 
 And now we have completely replicated the entire app!
 
-### **[Code Checkpoint 8](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/code/main8.c)**
+### **[Code Checkpoint 8](code/main8.c)**
 
 <a name="finalthoughts"></a>
 

@@ -393,7 +393,7 @@ You can import this library just like any of the others:
 Next, we'll need to create a variable for the color phase right next to the `phase` variable:
 
 ```C
-float color_phase = 0; // This will be used for showing color in the text
+float color_phase = 0; // This will be used for rotating the base hue for the text
 ```
 
 Now we just need to define a new variable type call HSV. This is why we needed to import that header. Don't worry about this too much in early projects, but learning how to create new variable types is essential when working with limited hardware like this and for programming in general.
@@ -420,7 +420,7 @@ Then modify the `hsv.hue` line to:
 hsv.hue = fmod(color_phase + i*COL_OFFSET, 360);
 ```
 
-Just like the sin wave, we need to update it per frame. Add the following line right next to your `phase` line:
+Just like the sine wave, we need to update it per frame. Add the following line right next to your `phase` line:
 
 ```C
 color_phase = fmod(color_phase + 1, 360.0f);
@@ -460,7 +460,7 @@ If you want to do it yourself, read on!
 
 #### Converting the audio
 
-I personally used Audacity for this since it's free and fairly simple to do what we're doing in it. To start, open any file that you want to convert. I recommend a short sound so that it doesn't take up much space.
+I personally used Audacity for this since it's free and fairly simple to do what we're doing in it. To start, open any file that you want to convert. In this example, I used the GameBoy startup sound. I recommend a short sound so that it doesn't take up much space. It doesn't matter too much if you choose to make a copy or read files directly in this case.
 
 You'll be presented with the following screen:
 
@@ -468,13 +468,21 @@ You'll be presented with the following screen:
 
 First, we'll want to trim off the extra silence at the beginning and end. You can do this by selecting a section like text, then just pressing the Delete key:
 
-[Deleting audio](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/aud2.png)
+[Selecting audio](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/aud2.png)
 
-Next, adjust the sample rate by choosing `Tracks > Resample...` and resample it to 8000 Hz. To make it a Mono track, choose `Tracks > Stereo to Mono`. 
+[Trimming trailing audio](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/aud3.png)
 
-Finally, we can export it. Choose `File > Export Audio`. For filetype, choose "Other uncompressed formats". Set the header to WAV, encoding to Unsigned 8-Bit PCM. Make sure to change the file extension to .wav.
+[Trimming leading audio](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/aud4.png)
 
-[File Settings](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/aud3.png)
+Next, adjust the sample rate by choosing `Tracks > Resample...` and resample it to 8000 Hz. To make it a Mono track, choose `Tracks > Stereo to Mono`. Set the `Project Sample Rate` at the bottom-left to 8000 Hz.
+
+To make sure that we don't cause any potential damage to the speaker (even though it is unlikely), choose `Effect > Amplify...` and enter `-6` for the `New Peak Amplitude` and choose `OK`.
+
+[Increased amplitude](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/aud5.png)
+
+Finally, we can export it. Choose `File > Export Audio`. For filetype, choose "Other uncompressed formats". Set the header to WAV, encoding to Unsigned 8-Bit PCM. Make sure to change the file extension to `.wav`.
+
+[File settings](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/aud6.png)
 
 Keeping the file name short will save you some hassle later on, so keep that in mind.
 
@@ -486,11 +494,16 @@ Again, we'll need to add another library:
 #include "sndmixer.h"		 // Sound Mixer library
 ```
 
-Now we need to do something a bit different. We need to tell the compiler to convert our audio file into a binary file that the sndmixer library can use. We'll start by creating a new file in the `main` folder called `component.mk`. In this file, we'll tell it to look at the .wav file we created. I used the GameBoy startup sound for my example:
+Then initialize the library by adding the following line along with the other `init()` functions:
+
+```C
+sndmixer_init(1, 8000); // (no. of channels, sample rate in khz)
+```
+
+Now we need to do something a bit different. We need to tell the compiler to convert our audio file into a binary file that the sndmixer library can use. In the `component.mk` file we created early on, we'll tell it to look at the .wav file we just made by adding the following line of code:
 
 ```mk
-# The wave files get embedded as binary files.
-COMPONENT_EMBED_FILES := sound/gameboy.wav
+COMPONENT_EMBED_FILES := sound/gameboy.wav # The wave files get embedded as binary files.
 ```
 
 Next time we compile the app, it will create the binary files for us. Now we need to go back to our `main.c` and define a few special variables outside the `app_main()`:
@@ -502,7 +515,7 @@ extern const uint8_t gameboy_wav_end[] asm("_binary_gameboy_wav_end");
 
 I won't get into detail on what this does, since I loosely understand it myself at best. But from what I gather, it's telling the sndmixer library where the binary data for these files within the binary blob exists.
 
-Now we'll create a simple function that plays the sound whenever we call it. Make sure to put this outside the `app_main()` loop:
+Now we'll create a simple function that plays the sound whenever we call it. Make sure to put this outside the `app_main()` function:
 
 ```C
 void play_sound() {
@@ -520,12 +533,12 @@ Within the `while()` loop, let's add an `else if` to the power button check that
 ```C
 if (kchal_get_keys() & KC_BTN_POWER) { // Check for power button press
 	do_powerbtn_menu();
-} else if (kchal_get_keys() & KC_BTN_A) {
+} else if (kchal_get_keys() & KC_BTN_A) { // Check for A button press
 	play_sound();
 }
 ```
 
-And if you compile it, you should now have the ability to get those classic GameBoy feels.
+And if you compile it, you should now have the ability to get those classic GameBoy feels (or whatever sound you decided to use).
 
 ### **[Code Checkpoint 7](https://github.com/otacon239/PS_HelloWorld/tree/master/tutorial/code/main7.c)**
 
@@ -578,7 +591,7 @@ Then, right after the `kcugui_flush();`, we want it to pause on the message for 
 vTaskDelay(pdMS_TO_TICKS(2000)); // PS version of sleep(ms)
 ```
 
-This hooks into the real-time clock and pauses for two seconds before continuing. Lastly, we want to make use of the function we just created. All we have to do is add our new `exit_anim()` function on the line just below `int i = powerbtn_menu_show(kcugui_get_fb());` line.
+This hooks into the real-time clock and pauses for two seconds before continuing. Lastly, we want to make use of the function we just created. All we have to do is add our new `exit_anim()` function on the line just below `int pwr_input = powerbtn_menu_show(kcugui_get_fb());` line.
 
 And now we have completely replicated the entire app!
 
@@ -596,7 +609,7 @@ With all of that said, this was an excellent learning experience and I look forw
 
 ### Coding Challenges
 
-If you've gone through this entire tutorial, and feel like you want more, why not try something on your own? Here are just some ideas I came up with. If you happen to meet any of these challenges successfully, I will feature them here with a link to your code on GitHub.
+If you're still itching for more, why not try something on your own? Here are just some ideas I came up with. If you happen to meet any of these challenges successfully, I will feature them here with a link to your code on GitHub.
 
 * Turn the rainbow wave into a function and have it display a random message in a text file uploaded to the device
 	* For an added challenge, if the message is longer than the display, make it scroll!

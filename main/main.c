@@ -13,9 +13,9 @@
 
 const UG_FONT *font = &FONT_6X8; // Define font for more readable code
 
-#define SIN_DEG 0.2    // Number of degrees per frame the phase for the sin wave moves
+#define SIN_DEG 0.2    // Number of degrees per frame the phase for the sine wave moves
 #define COL_DEG 2      // Number of degrees the base hue moves per frame
-#define SIN_FREQ 0.375 // Multiplier for the sin wave density - smaller = larger wave
+#define SIN_FREQ 0.375 // Multiplier for the sine wave density - smaller = larger wave
 #define COL_OFFSET 30  // Number of degrees per character the base hue is offset by
 #define SW KC_SCREEN_W       // Screen width
 #define SH KC_SCREEN_H       // Screen height
@@ -24,8 +24,8 @@ const UG_FONT *font = &FONT_6X8; // Define font for more readable code
 
 char hello[] = "Hello World!"; // Store strings that will be used
 char goodbye[] = "Goodbye!";
-float phase = 0;       // This will be used for the sin wave animation
-float color_phase = 0; // This will be used for showing color in the text
+float phase = 0;       // This will be used for the sine wave animation
+float color_phase = 0; // This will be used for rotating the base hue for the text
 
 extern const uint8_t gameboy_wav_start[] asm("_binary_gameboy_wav_start"); // Utilize generated binary pointers
 extern const uint8_t gameboy_wav_end[] asm("_binary_gameboy_wav_end");

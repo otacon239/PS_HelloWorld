@@ -3,8 +3,12 @@
 #include "hsv2rgb.h"       // Header I created for converting HSV to RGB
 #include "math.h"          // Needed for fabs(), fmod(), sin()
 #include "powerbtn_menu.h" // Power Button menu stuff powerbtn_menu_show, constants, etc
+#include "sndmixer.h"      // Sound Mixer library
 #include "string.h"        // Needed for str_len()
 #include "ugui.h"          // Full uGUI library - Full uGUI reference guide: http://embeddedlightning.com/download/reference-guide/
+
+extern const uint8_t gameboy_wav_start[] asm("_binary_gameboy_wav_start"); // Utilize generated binary pointers
+extern const uint8_t gameboy_wav_end[] asm("_binary_gameboy_wav_end");
 
 char hello[] = "Hello World!"; // Store string that will be used
 
@@ -23,6 +27,11 @@ float color_phase = 0; // This will be used for rotating the base hue for the te
 #define COL_OFFSET 10  // Number of degrees per character the base hue is offset by
 #define COL_DEG 2      // Number of degrees the base hue moves per frame
 
+void play_sound() {
+  int id = sndmixer_queue_wav(gameboy_wav_start, gameboy_wav_end, 0);
+  sndmixer_play(id);
+}
+
 static void do_powerbtn_menu() {
   int pwr_input = powerbtn_menu_show(kcugui_get_fb()); // Call the powerbutton menu
 
@@ -36,6 +45,7 @@ static void do_powerbtn_menu() {
 void app_main() {
   kchal_init();             // Initialize the PocketSprite SDK.
   kcugui_init();            // Initialize uGUI
+  sndmixer_init(1, 8000);   // (no. of channels, sample rate in khz)
   UG_FontSelect(font);      // The default font that is enabled out of the box
   UG_SetForecolor(C_WHITE); // You can find a full list of colors in the µGUI Reference Guide
   UG_SetBackcolor(C_BLACK);
@@ -62,6 +72,8 @@ void app_main() {
 
     if (kchal_get_keys() & KC_BTN_POWER) { // Check for power button press
       do_powerbtn_menu();
+    } else if (kchal_get_keys() & KC_BTN_A) { // Check if the A button is pressed
+      play_sound();
     }
   }
 }

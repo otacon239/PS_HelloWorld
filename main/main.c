@@ -32,63 +32,63 @@ extern const uint8_t gameboy_wav_start[] asm("_binary_gameboy_wav_start"); // Ut
 extern const uint8_t gameboy_wav_end[] asm("_binary_gameboy_wav_end");
 
 void exit_anim() { // What to show when exiting
-    kcugui_cls();
-    UG_PutString((SW - ((CW + 1) * strlen(goodbye) - 1)) / 2, (SH - CH) / 2, goodbye);
-    /* CW + 1 because UG_PutSring() adds an extra pixel of
+  kcugui_cls();
+  UG_PutString((SW - ((CW + 1) * strlen(goodbye) - 1)) / 2, (SH - CH) / 2, goodbye);
+  /* CW + 1 because UG_PutSring() adds an extra pixel of
     	space between each character and take 1 back for the
     	last character that does not need the space */
-    kcugui_flush();
-    vTaskDelay(pdMS_TO_TICKS(2000)); // PS version of sleep(ms)
+  kcugui_flush();
+  vTaskDelay(pdMS_TO_TICKS(2000)); // PS version of sleep(ms)
 }
 
 static void do_powerbtn_menu() {
-    int i = powerbtn_menu_show(kcugui_get_fb()); // Call the powerbutton menu
-    
-    exit_anim();
-    if (i == POWERBTN_MENU_EXIT) { // This checks the input from the power button menu - without it, menu options do nothing
-        kchal_exit_to_chooser();
-    } else if (i == POWERBTN_MENU_POWERDOWN) {
-        kchal_power_down();
-    }
+  int i = powerbtn_menu_show(kcugui_get_fb()); // Call the powerbutton menu
+
+  exit_anim();
+  if (i == POWERBTN_MENU_EXIT) { // This checks the input from the power button menu - without it, menu options do nothing
+    kchal_exit_to_chooser();
+  } else if (i == POWERBTN_MENU_POWERDOWN) {
+    kchal_power_down();
+  }
 }
 
 void play_sound() {
-    int id = sndmixer_queue_wav(gameboy_wav_start, gameboy_wav_end, 0);
-    sndmixer_play(id);
+  int id = sndmixer_queue_wav(gameboy_wav_start, gameboy_wav_end, 0);
+  sndmixer_play(id);
 }
 
 void app_main() {
-    kchal_init();           // Initialize the PocketSprite SDK.
-    kcugui_init();          // Initialize uGUI
-    sndmixer_init(1, 8000); // (no. of channels, sample rate in khz)
-    UG_FontSelect(font);    // The default font that is enabled out of the box
-    UG_SetForecolor(C_WHITE);
-    UG_SetBackcolor(C_BLACK);
-    while (true) {
-        kcugui_cls();
-        
-        for (int i = 0; i < strlen(hello); i++) {
-            HSV hsv;
-            hsv.hue = fmod(color_phase + i * COL_OFFSET, 360);
-            hsv.sat = 1;
-            hsv.val = 1;
-            RGB rgb = hsv2rgb(hsv);
-            
-            UG_PutChar(hello[i],                                                        // Char
-                i * CW + (SW - strlen(hello) * CW) / 2,                                   // X
-                round(sin(i * SIN_FREQ + phase) * (SH / 2 - CH / 2) + (SH / 2 - CH / 2)), // Y
-                kchal_ugui_rgb(rgb.r, rgb.g, rgb.b),                                      // FG Color
-                C_BLACK);                                                                 // BG Color
-        }
-        
-        phase = fmod(phase + 1 / (2 * PI) * SIN_DEG, 2 * PI); // Move phase forward by SIN_DEG degrees per frame
-        color_phase = fmod(color_phase + COL_DEG, 360.0f);    // Move the base hue by COL_DEG per frame
-        kcugui_flush();                                       // Send buffer to display
-        
-        if (kchal_get_keys() & KC_BTN_POWER) { // Check for power button press
-            do_powerbtn_menu();
-        } else if (kchal_get_keys() & KC_BTN_A) { // Check for a button press
-            play_sound();
-        }
+  kchal_init();           // Initialize the PocketSprite SDK.
+  kcugui_init();          // Initialize uGUI
+  sndmixer_init(1, 8000); // (no. of channels, sample rate in khz)
+  UG_FontSelect(font);    // The default font that is enabled out of the box
+  UG_SetForecolor(C_WHITE);
+  UG_SetBackcolor(C_BLACK);
+  while (true) {
+    kcugui_cls();
+
+    for (int i = 0; i < strlen(hello); i++) {
+      HSV hsv;
+      hsv.hue = fmod(color_phase + i * COL_OFFSET, 360);
+      hsv.sat = 1;
+      hsv.val = 1;
+      RGB rgb = hsv2rgb(hsv);
+
+      UG_PutChar(hello[i],                                                                 // Char
+                 i * CW + (SW - strlen(hello) * CW) / 2,                                   // X
+                 round(sin(i * SIN_FREQ + phase) * (SH / 2 - CH / 2) + (SH / 2 - CH / 2)), // Y
+                 kchal_ugui_rgb(rgb.r, rgb.g, rgb.b),                                      // FG Color
+                 C_BLACK);                                                                 // BG Color
     }
+
+    phase = fmod(phase + 1 / (2 * PI) * SIN_DEG, 2 * PI); // Move phase forward by SIN_DEG degrees per frame
+    color_phase = fmod(color_phase + COL_DEG, 360.0f);    // Move the base hue by COL_DEG per frame
+    kcugui_flush();                                       // Send buffer to display
+
+    if (kchal_get_keys() & KC_BTN_POWER) { // Check for power button press
+      do_powerbtn_menu();
+    } else if (kchal_get_keys() & KC_BTN_A) { // Check for a button press
+      play_sound();
+    }
+  }
 }

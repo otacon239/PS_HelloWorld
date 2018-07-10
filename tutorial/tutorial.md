@@ -122,7 +122,7 @@ HTTP://192.
 ```
 screen. Then, connect your computer to that WiFi access point. There will be no internet connection unless you also have an ethernet connection. Once connected, open the http://192.168.4.1 URL the browser of your choice and click the "Upload!" button. Then navigate to the `build` folder and choose our `ps_hello.bin`. Once uploaded, press any button on the PS and choose hello-world from the list.
 
-Technically you can change this file to the .spp extension if you want, but the device recognizes the .bin extension without any issue, so I personally just use the .bin.
+Technically you can change this file to the .app extension if you want, but the device recognizes the .bin extension without any issue, so I personally just use the .bin.
 
 If we did everything right, when you select the ps_hello app, it should pause for just a brief moment, then return to the same WiFi screen we saw earlier. Success! (unless not, in which case, good luck and use your [resources](#hitthebooks)!)
 

@@ -4,7 +4,7 @@ Before jumping straight into the tutorial, I wanted to give a heads-up that this
 
 I should also note that any time there is a link within an explanation of a step, it's expected that you're looking at that page when I'm referring to that page. In other words, if you see the link, click it!
 
-That being said, this was certainly quite the adventure, and many thanks go out to [Spritetm](https://github.com/Spritetm) and my close friend [mz2212](https://github.com/mz2212) for all of their support on me learning this project. Also, thanks to @ishotjr for correcting many of my grammar mistakes. Without further ado, let's get started!
+That being said, this was certainly quite the adventure, and many thanks go out to [Spritetm](https://github.com/Spritetm) and my close friend [mz2212](https://github.com/mz2212) for all of their support on me learning this project. Also, thanks to [ishotjr](https://github.com/ishotjr) for correcting many of my grammar mistakes. Without further ado, let's get started!
 
 ## Table of Contents
 

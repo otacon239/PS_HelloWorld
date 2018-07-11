@@ -61,7 +61,7 @@ You can safely delete the `hello_world` folder once you're done since we won't b
 
 ### Set Up the PocketSprite Environment
 
-Similarly, just slowly follow the steps provided in the [PS SDK Getting Started](http://pocketsprite-sdk.readthedocs.io/en/latest/gettingstarted/index.html#software) page. Once you have your environment variables  are setup and ready to go, it's time to get started on our actual program!
+Similarly, just slowly follow the steps provided in the [PS SDK Getting Started](http://pocketsprite-sdk.readthedocs.io/en/latest/gettingstarted/index.html#software) page. Once you have your environment variables setup and ready to go, it's time to get started on our actual program!
 
 ## Say Hello - Running Your First Program
 

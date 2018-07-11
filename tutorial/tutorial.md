@@ -41,7 +41,7 @@ The first thing mentioned in the Getting Started section of the [PS SDK document
 
 Follow the instructions step-by-step. *Slowly.* I had a lot of trouble here since it was my first go around with this, but just read everything on the page and follow each step carefully. Something I should mention briefly, although it will apply to few, I happen to use an alternative shell that's not `bash`, so I would occasionally run into weirdness. If you do that yourself, just save yourself the hassle and use `bash`.
 
-Once you've followed the steps on the Toolchain Setup, follow the [Get ESP-IDF](https://esp-idf.readthedocs.io/en/latest/get-started/index.html#get-started-get-esp-idf) link. I recommend following the steps outlined in the `hello_world` project just to make sure everything compiles. Once it comes back without any errors, you can safely delete your `hello_world` folder. However, you can skip the steps talking about enabling permissions for `/dev/tty0` and the parts about flashing since we're going to be uploading the files for our code via WiFi. You can simply do the following to test that creating the project folder worked:
+Once you've followed the steps on the Toolchain Setup, follow the [Get ESP-IDF](https://esp-idf.readthedocs.io/en/latest/get-started/index.html#get-started-get-esp-idf) link. I recommend following the steps outlined in the `hello_world` project just to make sure everything compiles. However, you can skip the steps talking about enabling permissions for `/dev/tty0` and the parts about flashing since we're going to be uploading the files for our code via WiFi. You can simply do the following to test that creating the project folder worked:
 
 ```bash
 cd ~/esp/hello_world
@@ -57,11 +57,11 @@ To flash all build output, run 'make flash' or:
 python /home/otacon/esp/esp-idf/components/esptool_py/esptool/esptool.py --chip esp32 --port /dev/ttyUSB0 --baud 115200 --before default_reset --after hard_reset write_flash -z --flash_mode dio --flash_freq 40m --flash_size detect 0x1000 /home/otacon/esp/hello_world/build/bootloader/bootloader.bin 0x10000 /home/otacon/esp/hello_world/build/hello-world.bin 0x8000 /home/otacon/esp/hello_world/build/partitions_singleapp.bin
 ```
 
-Once that's done, it's time to...
+You can safely delete the `hello_world` folder once you're done since we won't be using it. Once that's done, it's time to...
 
 ### Set Up the PocketSprite Environment
 
-Again, just slowly follow the steps provided in the [PS SDK Getting Started](http://pocketsprite-sdk.readthedocs.io/en/latest/gettingstarted/index.html#software) page. Once you have your environment variables setup and ready to go, it's time to get started on our actual program!
+Similarly, just slowly follow the steps provided in the [PS SDK Getting Started](http://pocketsprite-sdk.readthedocs.io/en/latest/gettingstarted/index.html#software) page. Once you have your environment variables  are setup and ready to go, it's time to get started on our actual program!
 
 ## Say Hello - Running Your First Program
 
@@ -88,7 +88,7 @@ void app_main() {
 * Create an empty file called `component.mk` also in the `main` folder - *We'll learn what this file does much later*
 * In your terminal, run `cd ~/esp/ps_hello`
 * Run `make menuconfig` and choose the following options:
-    * Compiler Options --> Optimization Level --> Release
+    * Compiler Options --> Optimization Level --> Select "Release"
 	* Component Config --> SPI Flash driver --> Writing to Dangerous Regions --> Select "Allowed"
 * Choose Exit until the menu closes
 * Run `make`
@@ -108,7 +108,7 @@ void app_main() {
 }
 ```
 
-I'll give you 3 guesses as to what this program does, but chances are, you only need one. This will simply exit the application silently and bring you back to the WiFi connection screen. Nothing too exciting, but it will prove that we can make an app.
+I'll give you three guesses as to what this program does, but chances are, you only need one. This will simply exit the application silently and bring you back to the WiFi connection screen. Nothing too exciting, but it will prove that we can make an app.
 
 Next, we'll need to get this code running on the device. You can simply run `make` agin. Now that we have some code to work with, let's get it on the PocketSprite.
 
@@ -120,13 +120,13 @@ GO TO:
 HTTP://192.
 168.4.1/
 ```
-screen. Then, connect your computer to that WiFi access point. There will be no internet connection unless you also have an ethernet connection. Once connected, open the http://192.168.4.1 URL the browser of your choice and click the "Upload!" button. Then navigate to the `build` folder and choose our `ps_hello.bin`. Once uploaded, press any button on the PS and choose hello-world from the list.
+screen. Then, connect your computer to that WiFi access point. There will be no internet connection unless you also have an ethernet connection. Once connected, open the http://192.168.4.1 URL the browser of your choice and click the "Upload!" button. Then navigate to the `build` folder and choose our `ps_hello.bin`. Once uploaded, press any button on the PS and choose `ps_hello` from the list.
 
 Technically you can change this file to the .app extension if you want, but the device recognizes the .bin extension without any issue, so I personally just use the .bin.
 
-If we did everything right, when you select the ps_hello app, it should pause for just a brief moment, then return to the same WiFi screen we saw earlier. Success! (unless not, in which case, good luck and use your [resources](#hitthebooks)!)
+If we did everything right, when you select the `ps_hello` app, it should pause for just a brief moment, then return to the same WiFi screen we saw earlier. Success! (unless not, in which case, good luck and use your [resources](#hitthebooks)!)
 
-From this point forward, any time we have code that *should* run, I'll put a full code link at the end of a section for comparison. Whenever you see the full code link, also assume that you can compile the code and upload to the device and it should work.
+From this point forward, any time we have code that *should* run, I'll put a **Code Checkpoint** link at the end of a section for comparison. Whenever you see the **Code Checkpoint** link, also assume that you can compile the code and upload to the device and it should work.
 
 This is the first one and the rest of them will also look like this:
 
@@ -162,7 +162,7 @@ You can remove the `kchal_exit_to_chooser();` line we added earlier for now. Oth
 
 ### **[Code Checkpoint 2](code/main2.c)**
 
-The important thing to note here is that we didn't give ourselves a way to exit the app. none of the buttons will respond and it appears we're stuck. At any point (no matter how stuck it appears), you can press the Start and Power buttons at the same time to force a reboot. This will come in quite handy while we're writing for the PS and something goes wrong. I speak from experience when I say that it will happen often.
+The important thing to note here is that we didn't give ourselves a way to exit the app. None of the buttons will respond and it appears we're stuck. At any point (no matter how stuck it appears), you can press the Start and Power buttons at the same time to force a reboot. This will come in quite handy while we're writing for the PS and something goes wrong. I speak from experience when I say that it will happen often.
 
 At this point, you should be able to see just the text "Hello World!" on the display. Since the display is so small, the '!' gets put on the next line.
 
@@ -190,7 +190,7 @@ static void do_powerbtn_menu() {
 
 Okay. What did we just add? First off, the line `int pwr_input = powerbtn_menu_show(kcugui_get_fb());` calls the power button menu from `powerbtn_menu.h` and since the function outputs to an `int` type variable, we need to store that output to something. In this case, the variable `pwr_input` that we initialized.
 
-Now that `pwr_input` has a value, we need to do something with it. Normally, I'd include a link to the documentation here to explain the values we get back, but it appears it hasn't been written yet. I will update this tutorial as soon as it is made public.
+Now that `pwr_input` has a value, we need to do something with it, so we check if the user selected the Close App option or the Power Down option. Depending on their input, we then run the associated commands. Normally, I'd include a link to the documentation here to explain the values we get back, but it appears it hasn't been written yet. I will update this tutorial as soon as it is made public.
 
 We then need to add a section to the bottom of `app_main()` to tell it to check the hardware buttons for any input:
 
@@ -202,7 +202,7 @@ while (true) {
 }
 ```
 
-Don't be tempted to remove the brackets to shorten things. We'll be adding more here later on.
+Don't be tempted to remove the braces to shorten things. We'll be adding more here later on.
 
 ### **[Code Checkpoint 3](code/main3.c)**
 
@@ -210,7 +210,7 @@ Now when you press the power button, you should see the menu that shows for the 
 
 ## Make it Pretty - Centering the Text
 
-If you're not a fan of math, this next section is not going to be the easiest to read, but I've done my best to explain how everything works. If we want to replicate what I've done in the video where the text moves along a sin wave, we'll need to make some significant changes to how the text is being drawn first.
+If you're not a fan of math, this next section is not going to be the easiest to read, but I've done my best to explain how everything works. If we want to replicate what I've done in the video where the text moves along a sine wave, we'll need to make some significant changes to how the text is being drawn first.
 
 Let's add the following:
 
@@ -226,7 +226,7 @@ UG_PutString(0, 0, "Hello World!");
 kcugui_flush(); // Send buffer to display
 ```
 
-lines for now. Let's start by create the string using the following line right underneath our `#include` lines:
+lines for now. Let's start by creating the string using the following line right underneath our `#include` lines:
 
 ```C
 char hello[] = "Hello World!"; // Store string that will be used
@@ -247,7 +247,7 @@ const UG_FONT *font = &FONT_6X8; // Define font for more readable code
 
 Let's also swap out the `UG_FontSelect(&FONT_6X8);` line for `UG_FontSelect(font);` now that we have that as a variable.
 
-Now that we have some simple variable to rely on, let's restore the functionality we started with by mimicking the `UG_PutString()` function. Add the following lines to the `while()` loop:
+Now that we have some easier values to work with, let's restore the functionality we started with by mimicking the `UG_PutString()` function. Add the following lines to the `while()` loop:
 
 ```C
 kcugui_cls(); // Clear the display
@@ -263,15 +263,13 @@ kcugui_flush(); // Push the buffer to the display
 
 It will look a bit odd this early on to put these on separate lines, but as these values become more complex, it will be very useful having them split up like this.
 
-If you run the code at this point, you should have almost the same result as before, except that the text is a bit more condensed since the `UG_PutString()` command adds an extra pixel of space in between each letter, which isn't necessary with this font. So it now fits on one line.
-
-The first thing we'll do is center the text. This is where the math comes in. See the below picture:
+If you run the code at this point, you should have almost the same result as before, except that the text is a bit more condensed since the `UG_PutString()` command adds an extra pixel of space in between each letter, which isn't necessary with this font. So it now fits on one line. Before we compile again, though, let's center the text. This is where the math comes in. See the below picture:
 
 ![Centering text](images/ti1.png)
 
 We're trying to get the value of `X` here. We figure out the width of the text by taking the length of the string and multiplying it by the number of characters in the string with `CW*strlen(hello)`.
 
-Next, we need to figure out to total of the blank space left over by subtracting that from `SW` so we get `SW-CW*strlen(hello)`. Then we just need to get half of that value: `(SW-CW*strlen(hello))/2`. Now we just add that offset to each character.
+Next, we need to figure out to total of the blank space left over by subtracting that from `SW` so we get `SW-CW*strlen(hello)`. Then we just need to get half of that value: `(SW-CW*strlen(hello))/2`, and add that offset to each character.
 
 Your `UG_PutChar` function should look like this now:
 ```C
@@ -291,18 +289,18 @@ It's been a while since we've compiled, so let's make sure all of those changes 
 The math only gets harder from here. Time for more libraries. Add the following line to our already existing `#include` lines:
 
 ```C
-#include "math.h"    // Needed for fabs(), fmod(), sin()
+#include "math.h" // Needed for fabs(), fmod(), sin()
 ```
 
 It's important to understand some basics of the `sin()` function. If we plot `Y=sin(x)` on a calculator with the window adjusted to the screen resolution of the PocketSprite, we get the black line in this picture:
 
 ![Sin Waves](images/ti2.png)
 
-*Note: I've adjusted the red and green line by multiplying by the width of the characters. These lines show where the characters would end up along these lines.*
+This black line goes from the value -1 to +1. What we want is for the value to go from 0 to the height of the screen (SH). In order to do that, we want to take that line and push it to the middle of the screen and make it the height of the screen. We can do that by adding half the height of the screen and multiplying it by half the height of the screen with `Y=sin(x)*SH/2 + SH/2`. That gives us the red line. As we know, the `UG_PutChar()` function starts at the top-left of the character, so we actually need to offset the sine wave. Again, the math is a bit tricky.
 
-We want to take that line and push it to the middle of the screen and make it the height of the screen. We can do that by adding half the height of the screen and multiplying it by half the height of the screen with `Y=sin(x)*SH/2 + SH/2`. That gives us the red line. As we know, the `UG_PutChar()` function starts at the top-left of the character, so we actually need to offset the sine wave. Again, the math is a bit tricky.
+*Note: I've adjusted the red and green line by multiplying by the width of the characters (CW). These lines show where the characters would end up along these lines.*
 
-We need to shrink the sine wave by the height of a full character, the move it back up by half the height of a full character, as marked in the picture. The resulting line is green. I've also multiplied `X` by less than one to make the sine wave have a lower frequency. This just makes it look cleaner on the small display. So now we have `Y=sin(x*.375)*(SH/2-CH/2)-(SH/2-CH/2)`.
+We need to shrink the sine wave by the height of a full character, the move it back up by half the height of a full character, making the center the blue line. The resulting line is green. I've also multiplied `X` by less than one to make the sine wave have a lower frequency. This just makes it look cleaner on the small display. So now we have `Y=sin(x*.375)*(SH/2-CH/2)-(SH/2-CH/2)`.
 
 If we want to apply this to our text, we just need to multiply our sine wave by the index of the characters themselves. And to gain better control of that `.375`, we just need to add a new `#define` with the others:
 
@@ -382,7 +380,7 @@ hsv.val = 1;
 RGB rgb = hsv2rgb(hsv);
 ```
 
-By default, this will make all of the colors almost the same since we're only moving the hue of the color by 1 degree per character. So we can add a new `#define` with the others. I recommend somewhere between 10 and 30 degrees for smooth, but noticeable change:
+By default, this will make all of the colors almost the same since we're only moving the hue of the color by 1 degree per character. To make it more noticable, we can add a new `#define` with the others. I recommend somewhere around 10 to 30 degrees per character:
 
 ```C
 #define COL_OFFSET 10 // Number of degrees per character the base hue is offset by
@@ -426,13 +424,13 @@ And that's all it takes to add a nice rainbow effect to our text.
 
 Time for us to make use of that built-in speaker. Some important information about the speaker and some challenges I faced. First off, it's important to know that the PS processes audio best when it's an 8-bit audio file with a mono channel. It can technically handle a high sample rate, but since we're using such a small speaker and trying to save on space, I found myself processing the audio at 8 khz.
 
-It can be a bit of a challenge making sure the audio meets those requirements. If you don't need this or don't want to do this yourself, you can skip to [Adding Our Code](#adding-our-code) section and just use [this file](sound/gameboy.wav).
+It can be a bit of a challenge making sure the audio meets those requirements. If you don't need this or don't want to do this yourself, you can skip to the [Adding Our Code](#adding-our-code) section and just use [this file](sound/gameboy.wav).
 
 If you want to do it yourself, read on!
 
 #### Converting the audio
 
-I personally used Audacity for this since it's free and fairly simple to do what we're doing in it. To start, open any file that you want to convert. In this example, I used the GameBoy startup sound. I recommend a short sound so that it doesn't take up much space. It doesn't matter too much if you choose to make a copy or read files directly in this case.
+I personally used [Audacity](https://www.audacityteam.org/) for this since it's free and fairly simple to do what we're doing in it. To start, open any file that you want to convert. In this example, I used the GameBoy startup sound. I recommend a short sound so that it doesn't take up much space. It doesn't matter too much if you choose to make a copy or read files directly in this case.
 
 You'll be presented with the following screen:
 
@@ -516,7 +514,7 @@ And if you compile it, you should now have the ability to get those classic Game
 
 ## Saying Goodbye - Adding a Simple Exit Screen
 
-For a final touch of personality, let's add a simple "Goodbye!" message that shows as you power down or exit the device. It sounds simple, but we'll actually need to pull in our last libraries and create a new function. Thankfully we did almost this exact math earlier, with only a few minor changes.
+For a final touch of personality, let's add a simple "Goodbye!" message that shows as you power down or exit the device. It sounds simple, but we'll actually need to pull in our last libraries and create a new function, as well as do some more math. Thankfully we did almost this exact math earlier, so we'll only be making a few minor changes.
 
 We'll need to grab the following libraries in order to utilize the FreeRTOS sleep functionality.
 
@@ -547,7 +545,7 @@ Now to center the text.
 
 `Y` is simple. We just need to take half the screen height and subtract half the character height.
 
-`X`, not so much. We'll need to take width of the screen and subtract the width of the text. So we need the `CW` times the number of characters. Then we need to add 1 for each character since the `UG_PutString` command adds an extra pixel in between each character, then take away the extra pixel for the last character. Then we dive the whole thing by 2. Your resulting function should look like this:
+`X`, not so much. We'll need to take width of the screen and subtract the width of the text. So we need the `CW` times the number of characters. Then we need to add 1 for each character since the `UG_PutString` command adds an extra pixel in between each character, then take away the extra pixel for the last character. Then we divide the whole thing by 2. Your resulting function should look like this:
 
 ```C
 UG_PutString((SW-((CW + 1)*strlen(goodbye)-1))/2, (SH-CH)/2, goodbye);

@@ -145,7 +145,7 @@ We'll need to bring in a few new libraries for this. Add the following lines nex
 #include "ugui.h" // Full uGUI library - Full uGUI reference guide: http://embeddedlightning.com/download/reference-guide/
 ```
 
-We'll want to remove the `kchal_exit_to_chooser()` line so that it doesn't immediately exit. Then add this to the `app_main()` function:
+Add this to the `app_main()` function:
 
 ```C
 kcugui_init(); // Initialize uGUI
@@ -323,7 +323,7 @@ float phase = 0; // This will be used for the sine wave animation
 Then, within the `while()` loop, we want to move the phase by 1 degree. I'm not going into detail on the math for this one, but just know that this equates to +1 degree per frame. ;)
 
 ```C
-phase = fmod(phase + 1 / (2 * PI), 2*PI);
+phase = fmod(phase + 1 / (2 * M_PI), 2*M_PI);
 ```
 
 If you find this to be a bit slow or fast, you can create a new variable, such as `SIN_DEG` by defining it next to the other defines with
@@ -335,7 +335,7 @@ If you find this to be a bit slow or fast, you can create a new variable, such a
 Then multiply it like so:
 
 ```C
-phase = fmod(phase + 1 / (2 * PI) * SIN_DEG, 2*PI); // Move phase forward by SIN_DEG degrees per frame
+phase = fmod(phase + 1 / (2 * M_PI) * SIN_DEG, 2*M_PI); // Move phase forward by SIN_DEG degrees per frame
 ```
 
 Let's not forget to make use of our new variable. Adjust the `// Y` line to read as such:

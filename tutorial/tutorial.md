@@ -110,7 +110,7 @@ void app_main() {
 
 I'll give you three guesses as to what this program does, but chances are, you only need one. This will simply exit the application silently and bring you back to the WiFi connection screen. Nothing too exciting, but it will prove that we can make an app.
 
-Next, we'll need to get this code running on the device. You can simply run `make` agin. Now that we have some code to work with, let's get it on the PocketSprite.
+Next, we'll need to get this code running on the device. You can simply run `make` again. Now that we have some code to work with, let's get it on the PocketSprite.
 
 If you haven't already figured out how to upload files to the device, it's fairly simple. Power on the device and leave it on the
 ```

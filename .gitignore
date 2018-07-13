@@ -1,4 +1,4 @@
 build
 sdkconfig.old
-/tutorial
-/.vscode
+.vscode
+.clang-format

@@ -35,7 +35,7 @@ And this isn't everything that I referenced for this simple little project. Undo
 
 ## A Dive Into C - Setting Up Your Environment
 
-I should mention now that I do all of my work on this device in Linux. Mint to be specific. In fact, the PS SDK mentions that only Linux is officially supported, for now.  That being said, [rorosaurus](https://github.com/rorosaurus) has reported success with using the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10) to install Ubuntu on Windows 10 and follow the Linux setup instructions normally.  Let's proceed by following the linked guides in order.
+I should mention now that I do all of my work on this device in Linux. Mint to be specific. In fact, the PS SDK mentions that only Linux is officially supported, for now. That being said, [rorosaurus](https://github.com/rorosaurus) has reported success with using the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10) to install Ubuntu on Windows 10 and follow the Linux setup instructions normally. Let's proceed by following the linked guides in order.
 
 The first thing mentioned in the Getting Started section of the [PS SDK documentation](http://pocketsprite-sdk.readthedocs.io/en/latest/gettingstarted/index.html#software) for software is that we need to [setup ESP-IDF](https://esp-idf.readthedocs.io/en/latest/get-started/index.html), which is the compiler for the ESP32; the microcontroller the PS runs on. This page looks daunting at first, but just scroll down until you find the nice large, friendly icons and click the Linux icon.
 
